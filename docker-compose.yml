@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  server-health-check-bot:
+    build: .
+    image: vntrieu25879/server-health-check-bot
+    container_name: server-health-check-bot
+    restart: unless-stopped
+    environment:
+      - API_URL=${API_URL}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
+      - CHECK_INTERVAL=${CHECK_INTERVAL:-60}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - monitor-network
+
+networks:
+  monitor-network:
+    driver: bridge 
