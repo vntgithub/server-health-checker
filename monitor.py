@@ -116,7 +116,7 @@ class APIMonitor:
             try:
                 is_healthy, status_code, message = self.check_api_health()
                 
-                if not is_healthy:
+                if not is_healthy and previous_healthy:
                     previous_healthy = False
                     # Send Telegram notification
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
