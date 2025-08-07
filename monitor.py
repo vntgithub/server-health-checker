@@ -109,16 +109,19 @@ class APIMonitor:
         """
         logger.info(f"Starting API monitor for {self.api_url}")
         logger.info(f"Check interval: {check_interval} seconds")
+
+        previous_healthy = True
         
         while True:
             try:
                 is_healthy, status_code, message = self.check_api_health()
                 
                 if not is_healthy:
+                    previous_healthy = False
                     # Send Telegram notification
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     telegram_message = (
-                        f"🚨 <b>API Health Alert</b>\n\n"
+                        f"🚨 <b>Server is down</b>\n\n"
                         f"<b>URL:</b> {self.api_url}\n"
                         f"<b>Status Code:</b> {status_code}\n"
                         f"<b>Message:</b> {message}\n"
@@ -129,6 +132,22 @@ class APIMonitor:
                         logger.info("Alert sent to Telegram")
                     else:
                         logger.error("Failed to send alert to Telegram")
+                else:
+                    if not previous_healthy:
+                        # Send Telegram notification if server is back online
+                        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        telegram_message = (
+                            f"🟢 <b>Server is back online</b>\n\n"
+                            f"<b>URL:</b> {self.api_url}\n"
+                            f"<b>Status Code:</b> {status_code}\n"
+                            f"<b>Message:</b> {message}\n"
+                            f"<b>Time:</b> {timestamp}"
+                        )
+                        if self.send_telegram_message(telegram_message):
+                            logger.info("Alert sent to Telegram")
+                        else:
+                            logger.error("Failed to send alert to Telegram")
+                        previous_healthy = True
                 
                 # Wait before next check
                 time.sleep(check_interval)

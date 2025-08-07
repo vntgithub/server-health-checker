@@ -52,18 +52,18 @@ A Python script that monitors the health of an API endpoint and sends Telegram n
 
 1. **Build the image**:
    ```bash
-   docker build -t server-health-checker .
+   docker build -t server-health-check-bot .
    ```
 
 2. **Run the container**:
    ```bash
    docker run -d \
-     --name server-health-checker \
+     --name server-health-check-bot \
      --restart unless-stopped \
      -e TELEGRAM_BOT_TOKEN=your_bot_token \
      -e TELEGRAM_CHAT_ID=your_chat_id \
      -e CHECK_INTERVAL=60 \
-     server-health-checker
+     server-health-check-bot
    ```
 
 ### Running locally
@@ -102,10 +102,10 @@ A Python script that monitors the health of an API endpoint and sends Telegram n
 
 ```bash
 # Docker Compose
-docker-compose logs -f server-health-checker
+docker-compose logs -f server-health-check-bot
 
 # Docker
-docker logs -f server-health-checker
+docker logs -f server-health-check-bot
 
 # Local
 tail -f monitor.log
